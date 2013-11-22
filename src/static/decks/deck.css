@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    min-height: 740px;
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 24px;
+    background: #eee;
+    color: #000;
+}
+
+.step {
+    position: relative;
+    width: 900px;
+    height: 700px;
+    padding: 40px 60px;
+    margin: 0 auto;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing:    border-box;
+    -ms-box-sizing:     border-box;
+    -o-box-sizing:      border-box;
+    box-sizing:         border-box;
+    line-height: 1.5;
+    border-radius: 20px;
+}
+
+.slide {
+    border: 0.3em solid #ccc;
+    background: #fff;
+    border-radius: 40px;
+}
+
+h1, h2 {
+    margin: 0;
+}
+
+h2 {
+    font-size: 4em;
+	color: #f90;
+}
+
+h2 span {
+	font-weight: normal;
+	color: black;
+}
+
+a {
+    color: #bdf;
+    text-decoration: none;
+}
+
+a:hover, a:focus {
+    color: #fff;
+}
+
+.impress-enabled .step {
+    opacity: 0.5;
+}
+.impress-enabled .step {
+    -webkit-transition: opacity 1s;
+    -moz-transition:    opacity 1s;
+    -ms-transition:     opacity 1s;
+    -o-transition:      opacity 1s;
+    transition:         opacity 1s;
+}
+
+.impress-enabled .step.active {
+    opacity: 1;
+}
+
+ul, ol {
+	line-height: 1.7em;
+    font-size: 3.4em;
+    margin: 0 0 0 1em;
+}
+
+p {
+	line-height: 2em;
+    font-size: 2.5em;
+}

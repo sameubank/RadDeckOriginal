@@ -1,0 +1,18 @@
+ssh -i ~/.ssh/RadDeck.pem ec2-user@ec2-54-227-130-32.compute-1.amazonaws.com
+sudo yum install gcc-c++ make
+sudo yum install openssl-devel
+sudo yum install git
+git clone git://github.com/joyent/node.git
+cd node
+git checkout v0.10.22
+./configure
+make
+sudo make install
+sudo su
+vi /etc/sudoers
+Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+sudo npm install express -g
+sudo npm install forever -g
+sudo npm install jade -g
+sudo npm install coffee-script -g
+sudo npm install socket.io -g

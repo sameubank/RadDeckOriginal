@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>RadDeck</title>
+    <link rel="stylesheet" type="text/css" href="/decks/deck.css">
+    <meta name="viewport" content="width=1024"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <script src="/decks/js/jquery-1.7.2.min.js"></script>
+    <script src="/lib.js"></script>
+    <script src="/refresh.js"></script>
+</head>
+
+<body>
+    <div id="impress" style="z-index:1;">
+
+        <div class="step slide">
+			<h2>
+				<img src="/img/logo.png" style="height:1em;margin:0 0.1em 0.1em 0;vertical-align:middle;">
+				Rad<span>Deck</span>
+			</h2>
+			<ul style="margin-left:2.5em;">
+				<li><b>R</b>ealtime</li>
+				<li><b>A</b>udience</li>
+				<li><b>D</b>ialogue</li>
+			</ul>
+        </div>
+
+        <div class="step slide a">
+            <h2>Connect</h2>
+            <ul>
+                <li>Follow along</li>
+                <li>Look back</li>
+                <li>Look ahead</li>
+            </ul>
+        </div>
+
+        <div class="step slide">
+            <h2>Quiz Slides</h2>
+            <ul>
+                <li>See progress</li>
+                <li>Show answers</li>
+                <li>See response %s</li>
+            </ul>
+        </div>
+
+        <div class="step slide">
+            <h2>Ratings</h2>
+            <ul>
+                <li>Give feedback</li>
+                <li>Improve slides</li>
+            </ul>
+        </div>
+
+        <div class="step slide">
+            <h2>Questions</h2>
+            <ul>
+                <li>Submit</li>
+                <li>Upvote</li>
+                <li>Answer</li>
+            </ul>
+        </div>
+
+        <div class="step slide a">
+            <h2>Target Market</h2>
+            <ul>
+                <li>Educators</li>
+                <li>Institutions</li>
+                <li>Anyone</li>
+            </ul>
+        </div>
+
+        <div class="step slide">
+            <h2>Revenue</h2>
+            <ul>
+                <li>Private repos</li>
+                <li>Pay templates</li>
+                <li>Video and more...</li>
+            </ul>
+        </div>
+
+        <div class="step slide a">
+            <h2>Tech</h2>
+            <ol>
+                <li>Express</li>
+                <li>CoffeeScript/Jade</li>
+                <li>Socket.IO</li>
+            </ol>
+        </div>
+
+        <div class="step slide">
+            <h2>Thank you</h2>
+            <ol>
+                <li>Vote</li>
+                <li>Join</li>
+                <li>Build</li>
+            </ol>
+        </div>
+
+    </div>
+
+    <script src="/decks/js/impress.js"></script>
+    <script>
+
+    $('a').attr('target', '_blank');
+    $('.animate').fadeOut();
+
+    var x = 0, y = 0, steps = {};
+    $('.step').each(function(index, step) {
+        var $step = $(step);
+        if ($step.hasClass('a')) {
+            x = 0;
+            y++;
+        }
+        $step
+            .attr('data-x', x * 1000)
+            .attr('data-y', y * 800);
+        x++;
+        var id = $step.find('h1,h2,h3,div')[0].innerText.replace(/[^a-z0-9-]+/gi, '-').replace(/(^-|-$)/g, '');
+        if (id) {
+            var suffix = '';
+            while (steps[id + suffix]) {
+                suffix = (suffix ? suffix : 0) + 1;
+            }
+            step.id = id + suffix;
+            steps[id + suffix] = step;
+        }
+    });
+
+    impress().init();
+
+    $('.step')
+        .bind('impress:stepgoto impress:stepenter', function() {
+            $(this).trigger('impress:stepreset');
+            $(this).find('.veil').stop().fadeOut('slow');
+        })
+        .bind('impress:stepleave', function() {
+            $(this).find('.veil').stop().fadeIn('slow').show();
+        });
+
+    $(document).keydown(function(event) {
+        var forward;
+        switch (event.keyCode) {
+            case 37:
+            case 38:
+                forward = false;
+                break;
+            case 32:
+            case 39:
+            case 40:
+                forward = true;
+                break;
+            default:
+                return;
+        }
+        move(forward);
+        socket.emit('deck:move', forward);
+    });
+
+	function move(forward) {
+		var transition = forward ? 'animate' : 'reset';
+        var apiMethod = forward ? 'next' : 'prev';
+        var $step = $('.active.step');
+        if ($step.find('.' + transition + ':hidden').length) {
+            $step.trigger('impress:step' + transition);
+        }
+        else {
+            impress()[apiMethod]();
+        }
+	}
+
+	socket.on('deck:moved', move);
+
+    $('.step').bind('impress:stepanimate impress:stepreset', function(event) {
+        var reset = /reset/.test(event.type);
+        var $step = $(this);
+        $step.find(reset ? '.animate' : '.reset').stop().fadeOut();
+        $step.find(reset ? '.reset' : '.animate').stop().fadeIn();
+    });
+
+    </script>
+</body>
+</html>
